@@ -29,7 +29,7 @@ public class FileChecksum extends CordovaPlugin {
         }
         if(action.equals("compareFileToChecksum")){
             JSONObject filesAndChecksums = args.getJSONObject(0);
-            this.compareFileToChecksum(filesAndChecksums,callbackContext);
+            this.compareFileToChecksum(filesAndChecksums, callbackContext);
             return true;
         }
         return false;
