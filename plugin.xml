@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
     <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
-            id="com.chasenoel.cordova.plugin.file-checksum" version="0.2.3">
+            id="com.chasenoel.cordova.plugin.file-checksum" version="0.3.0">
         <name>File Checksum</name>
         <description>Cordova Plugin For Calculating SHA1 Checksums Of Files</description>
         <license>Apache 2.0</license>
