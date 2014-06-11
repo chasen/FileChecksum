@@ -41,7 +41,7 @@ public class FileChecksum extends CordovaPlugin {
         return false;
     }
     
-    private void getChecksum(String filename, CallbackContext callbackContext){
+    private void getChecksum(final String filename, final CallbackContext callbackContext){
         Log.i(TAG, "getChecksum inner");
         cordova.getThreadPool().execute(new Runnable() {
             public void run() {
