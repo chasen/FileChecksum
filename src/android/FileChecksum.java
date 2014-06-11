@@ -59,39 +59,43 @@ public class FileChecksum extends CordovaPlugin {
         
     }
     
-    private String sha1Checksum(String file) throws FileNotFoundException,NoSuchAlgorithmException,IOException{
+    private String sha1Checksum(String file) throws Exception{
         Log.i(TAG, "sha1Checksum");
         try{
             MessageDigest md = MessageDigest.getInstance("SHA1");
+            try{
+                FileInputStream fis = new FileInputStream(file);
+                byte[] dataBytes = new byte[1024];
+
+                int nread = 0; 
+
+                while ((nread = fis.read(dataBytes)) != -1) {
+                  md.update(dataBytes, 0, nread);
+                };
+
+                byte[] mdbytes = md.digest();
+
+                Log.i(TAG, "sha1Checksum: digest");
+                //convert the byte to hex format
+                StringBuffer sb = new StringBuffer("");
+                for (int i = 0; i < mdbytes.length; i++) {
+                    sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
+                }
+                Log.i(TAG, "sha1Checksum: "+sb.toString());
+                return sb.toString();
+                
+            } catch(FileNotFoundException e){
+                Log.e(TAG, "sha1Checksum: fis - "+e.toString());
+                throw new Exception(e.toString());
+            }
         }
         catch(NoSuchAlgorithmException e){
-            Log.e(TAG, "sha1Checksum "+e.toString());
-            return "";
+            Log.e(TAG, "sha1Checksum: md - "+e.toString());
+            throw new Exception(e.toString());
         }
         
-        try{
-            FileInputStream fis = new FileInputStream(file);
-        } catch(FileNotFoundException e){
-            Log.e(TAG, "sha1Checksum "+e.toString());
-            return "";
-        }
-        byte[] dataBytes = new byte[1024];
-
-        int nread = 0; 
-
-        while ((nread = fis.read(dataBytes)) != -1) {
-          md.update(dataBytes, 0, nread);
-        };
-
-        byte[] mdbytes = md.digest();
-
-        Log.i(TAG, "sha1Checksum: digest");
-        //convert the byte to hex format
-        StringBuffer sb = new StringBuffer("");
-        for (int i = 0; i < mdbytes.length; i++) {
-            sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
-        }
-        Log.i(TAG, "sha1Checksum: "+sb.toString());
-        return sb.toString();
+        
+        
+       
     }
 }
