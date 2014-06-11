@@ -12,12 +12,17 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import android.util.Log;
 
 public class FileChecksum extends CordovaPlugin {
     
+    private static final String TAG = "FileChecksum";
+    
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+        Log.i(TAG, "Got a call to execute");
         if(action.equals("getChecksum")){
+            Log.i(TAG, "getChecksum");
             String filename = args.getString(0);
             this.getChecksum(filename,callbackContext);
             return true;
@@ -36,6 +41,7 @@ public class FileChecksum extends CordovaPlugin {
     }
     
     private void getChecksum(String filename, CallbackContext callbackContext){
+        Log.i(TAG, "getChecksum inner");
         try{
             String hash = sha1Checksum(filename);
             callbackContext.success(hash);
@@ -54,7 +60,7 @@ public class FileChecksum extends CordovaPlugin {
     }
     
     private String sha1Checksum(String file) throws FileNotFoundException,NoSuchAlgorithmException,IOException{
-        
+        Log.i(TAG, "sha1Checksum");
         MessageDigest md = MessageDigest.getInstance("SHA1");
         FileInputStream fis = new FileInputStream(file);
         byte[] dataBytes = new byte[1024];
@@ -72,6 +78,7 @@ public class FileChecksum extends CordovaPlugin {
         for (int i = 0; i < mdbytes.length; i++) {
             sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
         }
+        Log.i(TAG, "sha1Checksum: "+sb.toString());
         return sb.toString();
     }
 }

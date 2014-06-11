@@ -14,6 +14,7 @@ FileChecksum.prototype.getChecksum = function(file,success, fail){
                 fail = function(){ console.log('failed getChecksum: '+errMessage);};
             }
             else{
+                console.log(errMessage);
                 fail(new Error(errMessage));
             }
         },
