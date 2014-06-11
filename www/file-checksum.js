@@ -9,12 +9,12 @@ FileChecksum.prototype.getChecksum = function(file,success, fail){
             console.log('success, sending response');
             success(resp);
         },
-        function errorCallback(err){
+        function errorCallback(errMessage){
             if(typeof fail === 'undefined'){
-                fail = function(){ console.log('failed getChecksum');};
+                fail = function(){ console.log('failed getChecksum: '+errMessage);};
             }
             else{
-                fail(err);
+                fail(new Error(errMessage));
             }
         },
         'FileChecksum',
