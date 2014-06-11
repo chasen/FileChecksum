@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.FileInputStream;
+import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.io.FileNotFoundException;
@@ -59,30 +60,36 @@ public class FileChecksum extends CordovaPlugin {
         
     }
     
-    private String sha1Checksum(String file) throws Exception{
+    private String sha1Checksum(String filename) throws Exception{
         Log.i(TAG, "sha1Checksum");
         try{
             MessageDigest md = MessageDigest.getInstance("SHA1");
             try{
-                FileInputStream fis = new FileInputStream(file);
-                byte[] dataBytes = new byte[1024];
+                FileInputStream fis = new FileInputStream(new File(filename));
+                try{
+                    byte[] dataBytes = new byte[1024];
+                    int nread = 0; 
 
-                int nread = 0; 
+                    while ((nread = fis.read(dataBytes)) != -1) {
+                      md.update(dataBytes, 0, nread);
+                    };
 
-                while ((nread = fis.read(dataBytes)) != -1) {
-                  md.update(dataBytes, 0, nread);
-                };
+                    byte[] mdbytes = md.digest();
 
-                byte[] mdbytes = md.digest();
-
-                Log.i(TAG, "sha1Checksum: digest");
-                //convert the byte to hex format
-                StringBuffer sb = new StringBuffer("");
-                for (int i = 0; i < mdbytes.length; i++) {
-                    sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
+                    Log.i(TAG, "sha1Checksum: digest");
+                    //convert the byte to hex format
+                    StringBuffer sb = new StringBuffer("");
+                    for (int i = 0; i < mdbytes.length; i++) {
+                        sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
+                    }
+                    Log.i(TAG, "sha1Checksum: "+sb.toString());
+                    fis.close();
+                    return sb.toString();
                 }
-                Log.i(TAG, "sha1Checksum: "+sb.toString());
-                return sb.toString();
+                catch(IOException e){
+                    Log.e(TAG, "sha1Checksum: io - "+e.toString());
+                    throw new Exception(e.toString());
+                }
                 
             } catch(FileNotFoundException e){
                 Log.e(TAG, "sha1Checksum: fis - "+e.toString());
