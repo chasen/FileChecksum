@@ -61,8 +61,20 @@ public class FileChecksum extends CordovaPlugin {
     
     private String sha1Checksum(String file) throws FileNotFoundException,NoSuchAlgorithmException,IOException{
         Log.i(TAG, "sha1Checksum");
-        MessageDigest md = MessageDigest.getInstance("SHA1");
-        FileInputStream fis = new FileInputStream(file);
+        try{
+            MessageDigest md = MessageDigest.getInstance("SHA1");
+        }
+        catch(NoSuchAlgorithmException e){
+            Log.e(TAG, "sha1Checksum "+e.toString());
+            return "";
+        }
+        
+        try{
+            FileInputStream fis = new FileInputStream(file);
+        } catch(FileNotFoundException e){
+            Log.e(TAG, "sha1Checksum "+e.toString());
+            return "";
+        }
         byte[] dataBytes = new byte[1024];
 
         int nread = 0; 
@@ -73,6 +85,7 @@ public class FileChecksum extends CordovaPlugin {
 
         byte[] mdbytes = md.digest();
 
+        Log.i(TAG, "sha1Checksum: digest");
         //convert the byte to hex format
         StringBuffer sb = new StringBuffer("");
         for (int i = 0; i < mdbytes.length; i++) {
