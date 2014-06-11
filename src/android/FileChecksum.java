@@ -43,13 +43,17 @@ public class FileChecksum extends CordovaPlugin {
     
     private void getChecksum(String filename, CallbackContext callbackContext){
         Log.i(TAG, "getChecksum inner");
-        try{
-            String hash = sha1Checksum(filename);
-            callbackContext.success(hash);
-        }
-        catch(Exception e){
-            callbackContext.error(e.getMessage());
-        }
+        cordova.getThreadPool().execute(new Runnable() {
+            public void run() {
+                try{
+                    String hash = sha1Checksum(filename);
+                    callbackContext.success(hash);
+                }
+                catch(Exception e){
+                    callbackContext.error(e.getMessage());
+                }
+            }
+        });
     }
     
     private void getChecksums(JSONArray files, CallbackContext callbackContext){
@@ -100,9 +104,5 @@ public class FileChecksum extends CordovaPlugin {
             Log.e(TAG, "sha1Checksum: md - "+e.toString());
             throw new Exception(e.toString());
         }
-        
-        
-        
-       
     }
 }
